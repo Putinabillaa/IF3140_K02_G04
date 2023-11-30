@@ -2,7 +2,7 @@ import os
 import re
 
 
-from type.Transaction import Transaction, TransactionType
+from type.Transaction import Operation, OperationType
 
 
 # Valid Regex
@@ -18,7 +18,7 @@ commit_pattern = re.compile(r'C(\d+)')
 class FileReader:
     @staticmethod
     def read_schedule(file_path: str):
-        schedule: list[Transaction] = []
+        schedule: list[Operation] = []
 
         with open(file_path, 'r') as file:
             for idx, line in enumerate(file.readlines()):
@@ -29,17 +29,17 @@ class FileReader:
 
                 match: re.Match = read_pattern.match(line)
                 if match:
-                    schedule.append(Transaction(TransactionType.READ, match.group(1), match.group(2)))
+                    schedule.append(Operation(OperationType.READ, match.group(1), match.group(2)))
                     continue
 
                 match: re.Match = write_pattern.match(line)
                 if match:
-                    schedule.append(Transaction(TransactionType.WRITE, match.group(1), match.group(2)))
+                    schedule.append(Operation(OperationType.WRITE, match.group(1), match.group(2)))
                     continue
 
                 match: re.Match = commit_pattern.match(line)
                 if match:
-                    schedule.append(Transaction(TransactionType.COMMIT, match.group(1)))
+                    schedule.append(Operation(OperationType.COMMIT, match.group(1)))
                     continue
 
                 raise Exception(f'Invalid line at line {idx + 1}: {line}')
