@@ -1,3 +1,4 @@
+from copy import deepcopy
 from type.Operation import Operation, OperationType
 
 
@@ -53,12 +54,14 @@ class MultiversionTimestampManager:
             if resource.write_timestamp <= self.__transaction_timestamps[operation.number] and resource.write_timestamp > resource_used.write_timestamp:
                 resource_used = resource
         
+        self.__executed_operations[operation.number].append(operation)
         if self.__transaction_timestamps[operation.number] < resource_used.read_timestamp:
             print(f"T{operation.number} is rolled back and assigned new timestamp {self.__timestamp}")
             self.__transaction_timestamps[operation.number] = self.__timestamp
             self.__timestamp += 1
 
-            for operation in self.__executed_operations[operation.number]:
+            rollback_operations: list[Operation] = deepcopy(self.__executed_operations[operation.number])
+            for operation in rollback_operations:
                 print(operation)
                 match operation.mode:
                     case OperationType.READ:
@@ -70,7 +73,6 @@ class MultiversionTimestampManager:
 
             return
         
-        self.__executed_operations[operation.number].append(operation)
         print(f"T{operation.number} gets {resource_used}", end=" ")
         
         if self.__transaction_timestamps[operation.number] == resource_used.write_timestamp:
