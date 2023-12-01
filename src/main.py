@@ -12,11 +12,24 @@ if __name__ == '__main__':
         choice = input('>> ')
 
     if choice == '1':
-        file_path = input('Enter file path: ')
-        schedule = FileReader.read_schedule(file_path)
+        cek = False
+        while cek == False:
+            file_path = input('Enter file path: ')
+            try:
+                schedule = FileReader.read_schedule(file_path)
+                cek = True
+            except Exception as e:
+                print(e)
+            
 
     elif choice == '2':
-        schedule = InputReader.read_schedule()
+        cek = False
+        while cek == False:
+            try:
+                schedule = InputReader.read_schedule()
+                cek = True
+            except Exception as e:
+                print(e)
     
     print('Choose algorithm:')
     print('1. Two Phase Locking')
