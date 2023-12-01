@@ -35,7 +35,7 @@ This program require python 3.10 or later versions to run.
 
     If you choose to input from console, follow this input format: ```R<number>(<item>) W<number>(<item>) C<number>```, each operation separated by space and no other characters.
 
-    Note: number should be an integer and item should be any string but not a number.
+    Note: number should be an integer (representing transaction number) and item should be any string but not a number.
   5. Choose the algorithm you want to use.
      
       ```
@@ -96,7 +96,7 @@ This program require python 3.10 or later versions to run.
        ```
 
    ## Contributors
-      |NIM|Nama|
+      |NIM|Name|
       |---|---|
       |13521078|Christian Albert Hasiholan|
       |13521088|Puti Nabilla Aidira|
