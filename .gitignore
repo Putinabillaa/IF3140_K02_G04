@@ -3,3 +3,7 @@ __pycache__
 
 # Test File
 test.py
+
+# IDE
+.idea
+*.iml
