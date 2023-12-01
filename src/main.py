@@ -1,5 +1,6 @@
 from manager.MultiversionTimestamp import MultiversionTimestampManager
 from manager.TwoPhaseLocking import TwoPhaseLockingManager
+from manager.OptimisticConcurrencyControl import OptimisticConcurrencyControlManager
 from utils.FileReader import FileReader
 from utils.InputReader import InputReader
 
@@ -42,8 +43,7 @@ if __name__ == '__main__':
     if choice == '1':
         manager = TwoPhaseLockingManager()
     elif choice == '2':
-        # manager = OptimisticConcurrencyControlManager()
-        print('Not implemented yet')
+        manager = OptimisticConcurrencyControlManager()
     elif choice == '3':
         manager = MultiversionTimestampManager()
 
