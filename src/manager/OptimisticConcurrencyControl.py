@@ -105,6 +105,7 @@ class OptimisticConcurrencyControlManager:
                 if not currentTrs.is_start:
                     self.timestamp += 1
                     currentTrs.start_timestamp = self.timestamp
+                    currentTrs.is_start = True
 
                 if operation.mode == OperationType.READ:
                     mode = OCCOutputOperationType.READ
