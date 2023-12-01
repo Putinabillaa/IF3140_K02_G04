@@ -71,7 +71,7 @@ class MultiversionTimestampManager:
 
             rollback_operations: list[Operation] = deepcopy(self.__executed_operations[operation.number])
 
-            for dependency in self.__dependencies[operation.number]:
+            for dependency in sorted(self.__dependencies[operation.number]):
                 if not (dependency in self.__committed.keys() and self.__committed[dependency]):
                     rollback_transaction.append(dependency)
 
@@ -109,6 +109,7 @@ class MultiversionTimestampManager:
     def __process_commit(self, operation: Operation) -> None:
         self.__committed[operation.number] = True
         print(f"Transaction {operation.number} committed")
+        del self.__executed_operations[operation.number]
 
 
     def simulate(self, schedule: list[Operation]) -> None:
