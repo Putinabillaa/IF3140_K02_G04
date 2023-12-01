@@ -321,7 +321,6 @@ class TwoPhaseLockingManager:
             self.__process_all_queue()
 
             for key in unfinished:
-                self.__debug_queue(self.states[key].queue)
                 if len(self.states[key].queue) == 0:
                     unfinished.remove(key)
 
