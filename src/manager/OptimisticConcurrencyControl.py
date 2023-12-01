@@ -18,7 +18,7 @@ class OptimisticConcurrencyControlManager:
         # Initialize time, schedule to be executed and list for all transactions in this schedule
         self.timestamp = 0
         self.executed_schedule: list[OCCOutput] = []
-        self.transaction: dict[int, OptTransactionState] = {}
+        self.transactions_list: dict[int, OptTransactionState] = {}
 
     def first_condition(self, firstTr: OptTransactionState, secondTr: OptTransactionState):
         # firstTr is a transaction that validate earlier than secondTr
@@ -46,31 +46,35 @@ class OptimisticConcurrencyControlManager:
 
     def validation_phase(self, transaction):
         # Test the transaction for 2 conditions
-        for checkedTrs in self.transaction.values():
+        for checkedTrs in self.transactions_list.values():
             if transaction.validation_timestamp > checkedTrs.validation_timestamp:
                 if not (self.first_condition(checkedTrs, transaction) or self.second_condition(checkedTrs, transaction)):
                     return False
         return True
 
-
-    def simulate(self, schedule: list[Operation]):
-
+    def initialize_transactions(self, schedule: list[Operation]):
+        # Initiate all transactions and save it on the lists
         for operation in schedule:
-            # Initiate all transactions and save it on the lists
             op_n = operation.number
             op_m = operation.mode
             op_i = operation.item
-            if op_n not in self.transaction:
+            if op_n not in self.transactions_list:
                 trs = OptTransactionState(op_n)
-                self.transaction[op_n] = trs
+                self.transactions_list[op_n] = trs
 
             # Save all read and write items by that transaction
             if op_m == OperationType.READ:
-                self.transaction[op_n].read_items.append(op_i)
-                self.transaction[op_n].operation_list.append(OCCOutput(OCCOutputOperationType.READ, op_n, op_i))
+                self.transactions_list[op_n].read_items.append(op_i)
+                self.transactions_list[op_n].operation_list.append(OCCOutput(OCCOutputOperationType.READ, op_n, op_i))
             if op_m == OperationType.WRITE:
-                self.transaction[op_n].write_items.append(op_i)
-                self.transaction[op_n].operation_list.append(OCCOutput(OCCOutputOperationType.WRITE, op_n, op_i))
+                self.transactions_list[op_n].write_items.append(op_i)
+                self.transactions_list[op_n].operation_list.append(OCCOutput(OCCOutputOperationType.WRITE, op_n, op_i))
+
+
+    def simulate(self, schedule: list[Operation]):
+        
+        # Initialize all transactions and it's attribute
+        self.initialize_transactions(schedule)
 
         # Start simulate schedule
         for operation in schedule:
@@ -78,7 +82,7 @@ class OptimisticConcurrencyControlManager:
             # If commit, check validation first, if fail then abort and replay transaction until commit
             if operation.mode == OperationType.COMMIT:
                 self.timestamp += 1
-                commitTrs = self.transaction[operation.number]
+                commitTrs = self.transactions_list[operation.number]
                 commitTrs.validation_timestamp = self.timestamp
                 
                 valid = self.validation_phase(commitTrs)
@@ -101,7 +105,7 @@ class OptimisticConcurrencyControlManager:
 
             # Read and write operation, also initialize transaction start timestamp
             else:
-                currentTrs = self.transaction[operation.number] 
+                currentTrs = self.transactions_list[operation.number] 
                 if not currentTrs.is_start:
                     self.timestamp += 1
                     currentTrs.start_timestamp = self.timestamp

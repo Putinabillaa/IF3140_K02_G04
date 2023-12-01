@@ -36,7 +36,7 @@ This program require python 3.10 or later versions to run.
     If you choose to input from console, follow this input format: ```R<number>(<item>) W<number>(<item>) C<number>```, each operation separated by space and no other characters.
 
     Note: number should be an integer (representing transaction number) and item should be any string but not a number.
-  5. Choose the algorithm you want to use.
+4. Choose the algorithm you want to use.
      
       ```
       Choose algorithm:
@@ -65,6 +65,35 @@ This program require python 3.10 or later versions to run.
       C3
      ```
     - For Optimistic Concurrency Control (OCC):
+      ```
+      Final Schedule:
+      R1(A)
+      W2(B)
+      R3(A)
+      W1(A)
+      Validation for T1 is success
+      C1
+      R2(B)
+      R1(B)
+      Validation for T2 is success
+      C2
+      R3(B)
+      W3(A)
+      W3(B)
+      Validation for T3 is failed
+      A3 --> Abort, rollback
+      R3(A)
+      R3(B)
+      W3(A)
+      W3(B)
+      Validation for T3 is success
+      C3
+      R4(C)
+      W4(C)
+      Validation for T4 is success
+      C4
+       ```
+    - For Multiversion Timestamp Ordering Concurrency Control (MVCC):
       ```
       Final Schedule:
       R1(A)
@@ -101,5 +130,5 @@ This program require python 3.10 or later versions to run.
       |13521078|Christian Albert Hasiholan|
       |13521088|Puti Nabilla Aidira|
       |13521096|Noel Christoffel Simbolon|
-      |1352111|Farhan Nabil Suryono|
+      |13521114|Farhan Nabil Suryono|
         
