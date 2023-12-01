@@ -250,17 +250,16 @@ class TwoPhaseLockingManager:
         return False
 
 
-    def __process_commit(self, transaction: Operation) -> bool:
-        if transaction.number not in self.states.keys():
-            self.states[transaction.number] = TransactionState()
+    def __process_commit(self, operation: Operation) -> bool:
+        if operation.number not in self.states.keys():
+            self.states[operation.number] = TransactionState()
 
-        for item in self.states[transaction.number].locks:
-            # self.locks[item][transaction.number] = LockType.NONE
-            if transaction.number in self.locks[item].keys():
-                self.locks[item].pop(transaction.number)
+        for item in self.states[operation.number].locks:
+            if operation.number in self.locks[item].keys():
+                self.locks[item].pop(operation.number)
 
-        self.states[transaction.number].commit()
-        self.final_schedule.append(TPOutput(TPOutputOperationType.COMMIT, transaction.number))
+        self.states[operation.number].commit()
+        self.final_schedule.append(TPOutput(TPOutputOperationType.COMMIT, operation.number))
 
         self.__process_all_queue()
         return True
